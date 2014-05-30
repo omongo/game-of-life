@@ -11,10 +11,11 @@ class Cell:
         return 'O ' if self.state else '  '
 
 class Universe:
-    def __init__(self, row, column):
+    def __init__(self, row, col):
         self.row = row
-        self.column = column
-        self.cells = [[Cell(random.choice((False, True))) for i in range(column)] for i in range(row)]
+        self.col = col
+        self.cells = tuple([tuple([Cell(random.choice((False, True)))
+            for i in range(col)]) for i in range(row)])
 
     def show(self):
         for row in self.cells:
@@ -22,50 +23,48 @@ class Universe:
                 print(cell, end='')
             print()
 
-    def calculate_neighbour(self):
+    def evolve(self):
+        self._calc_neighbour()
+        self._calc_state()
+
+    def _calc_neighbour(self):
         cells = self.cells
         row = self.row
-        column = self.column
+        col = self.col
         for y in range(row):
-            for x in range(column):
+            for x in range(col):
                 if cells[y - 1][x - 1].state:
                     cells[y][x].neighbour += 1
                 if cells[y - 1][x].state:
                     cells[y][x].neighbour += 1
-                if cells[y - 1][(x + 1) % column].state:
+                if cells[y - 1][(x + 1) % col].state:
                     cells[y][x].neighbour += 1
                 if cells[y][x - 1].state:
                     cells[y][x].neighbour += 1
-                if cells[y][(x + 1) % column].state:
+                if cells[y][(x + 1) % col].state:
                     cells[y][x].neighbour += 1
                 if cells[(y + 1) % row][x - 1].state:
                     cells[y][x].neighbour += 1
                 if cells[(y + 1) % row][x].state:
                     cells[y][x].neighbour += 1
-                if cells[(y + 1) % row][(x + 1) % column].state:
+                if cells[(y + 1) % row][(x + 1) % col].state:
                     cells[y][x].neighbour += 1
 
-    def calculate_next_state(self):
+    def _calc_state(self):
         cells = self.cells
         for y in range(self.row):
-            for x in range(self.column):
+            for x in range(self.col):
                 if cells[y][x].state:
-                    if cells[y][x].neighbour in (2, 3):
-                        cells[y][x].state = True
-                    else:
+                    if cells[y][x].neighbour not in (2, 3):
                         cells[y][x].state = False
                 else:
                     if cells[y][x].neighbour == 3:
                         cells[y][x].state = True
                 cells[y][x].neighbour = 0
 
-    def evolve(self):
-        self.calculate_neighbour()
-        self.calculate_next_state()
-
 if __name__ == '__main__':
     u = Universe(24, 40)
-    for i in range(3600):
+    while True:
         os.system('clear')
         u.show()
         u.evolve()
