@@ -17,7 +17,7 @@ class Universe:
         self.cells = tuple([tuple([Cell(random.choice((False, True)))
             for i in range(col)]) for i in range(row)])
 
-    def show(self):
+    def plot(self):
         for row in self.cells:
             for cell in row:
                 print(cell, end='')
@@ -66,6 +66,6 @@ if __name__ == '__main__':
     os.system('clear')
     u = Universe(24, 40)
     while True:
-        u.show()
+        u.plot()
         u.evolve()
         time.sleep(0.5)
