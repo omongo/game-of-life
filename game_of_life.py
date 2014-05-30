@@ -63,9 +63,9 @@ class Universe:
                 cells[y][x].neighbour = 0
 
 if __name__ == '__main__':
+    os.system('clear')
     u = Universe(24, 40)
     while True:
-        os.system('clear')
         u.show()
         u.evolve()
         time.sleep(0.5)
